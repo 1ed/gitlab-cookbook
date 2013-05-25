@@ -88,7 +88,7 @@ template "#{node[:gitlab][:app_home]}/config/puma.rb" do
   notifies :restart, "service[gitlab]"
 end
 
-template "#{node[:gitlab][:app_home]}/db/fixtrues/production/001_admin.rb" do
+template "#{node[:gitlab][:app_home]}/db/fixtures/production/001_admin.rb" do
   source "admin_fixture.yml.erb"
   owner node[:gitlab][:user]
   group node[:gitlab][:user]
