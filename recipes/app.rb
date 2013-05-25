@@ -24,46 +24,6 @@ execute "gitlab-fix-permissions" do
   action :run
 end
 
-# render templates
-
-template "#{node[:gitlab][:app_home]}/config/database.yml" do
-  source "database.yml.erb"
-  owner node[:gitlab][:user]
-  group node[:gitlab][:user]
-  mode 0600
-  notifies :reload, "service[gitlab]"
-end
-
-template "#{node[:gitlab][:app_home]}/config/gitlab.yml" do
-  source "gitlab.yml.erb"
-  owner node[:gitlab][:user]
-  group node[:gitlab][:user]
-  mode 0600
-end
-
-template "#{node[:gitlab][:app_home]}/config/resque.yml" do
-  source "resque.yml.erb"
-  owner node[:gitlab][:user]
-  group node[:gitlab][:user]
-  mode 0600
-  notifies :reload, "service[gitlab]"
-end
-
-template "#{node[:gitlab][:app_home]}/config/puma.rb" do
-  source "puma.rb.erb"
-  owner node[:gitlab][:user]
-  group node[:gitlab][:user]
-  mode 0600
-  notifies :reload, "service[gitlab]"
-end
-
-template "#{node[:gitlab][:user_home]}/.gitconfig" do
-  source "gitconfig.erb"
-  owner node[:gitlab][:user]
-  group node[:gitlab][:user]
-  mode 00644
-end
-
 # create dirs
 
 directory node[:gitlab][:satellites_home] do
@@ -81,6 +41,47 @@ end
     recursive true
     action :create
   end
+end
+
+# render templates
+
+template "#{node[:gitlab][:app_home]}/config/database.yml" do
+  source "database.yml.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+  notifies :restart, "service[gitlab]"
+end
+
+template "#{node[:gitlab][:app_home]}/config/gitlab.yml" do
+  source "gitlab.yml.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+  notifies :restart, "service[gitlab]"
+end
+
+template "#{node[:gitlab][:app_home]}/config/resque.yml" do
+  source "resque.yml.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+  notifies :restart, "service[gitlab]"
+end
+
+template "#{node[:gitlab][:app_home]}/config/puma.rb" do
+  source "puma.rb.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+  notifies :reload, "service[gitlab]"
+end
+
+template "#{node[:gitlab][:user_home]}/.gitconfig" do
+  source "gitconfig.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 00644
 end
 
 # install bundles
@@ -108,7 +109,7 @@ template "/etc/init.d/gitlab" do
   owner "root"
   group "root"
   mode 00755
-  notifies :reload, "service[gitlab]"
+  notifies :restart, "service[gitlab]"
 end
 
 # start gitlab service
