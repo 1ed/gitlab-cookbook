@@ -31,10 +31,12 @@ default[:gitlab][:database_config] = {
   :host => 'localhost',
   :socket => "/var/run/mysqld/mysqld.sock"
 }
+# this taken into account at the first run only
 default[:gitlab][:admin] = {
   :email => "admin@local.host",
   :name => "Administrator",
   :username => "root",
+  # password must be at least 6 chars long
   :password => "5iveL!fe"
 }
 default[:gitlab][:backup_path] = "tmp/backups"

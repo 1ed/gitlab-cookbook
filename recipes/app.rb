@@ -8,6 +8,10 @@
 # file that was distributed with this source code.
 #
 
+Chef::Application.fatal!(
+  "gitlab admin user password must be at least 6 characters long"
+) if node[:gitlab][:admin][:password].length < 6
+
 # git clone
 git node[:gitlab][:app_home] do
   repository node[:gitlab][:git_url]
