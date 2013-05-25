@@ -8,6 +8,7 @@
 # file that was distributed with this source code.
 #
 
+include_recipe "nginx::repo"
 include_recipe "nginx"
 
 # generate certificates
@@ -31,15 +32,10 @@ bash "gitlab-create-SSL-certificate" do
 end
 
 # create vistualhost
-template "/etc/nginx/sites-available/gitlab" do
+template "/etc/nginx/conf.d/gitlab.conf" do
   owner "root"
   group "root"
   mode 0644
   source "nginx_vhost.erb"
-  notifies :reload, "service[nginx]"
-end
-
-link "/etc/nginx/sites-enabled/gitlab" do
-  to "/etc/nginx/sites-available/gitlab"
   notifies :reload, "service[nginx]"
 end
