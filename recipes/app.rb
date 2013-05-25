@@ -43,7 +43,18 @@ end
   end
 end
 
+# define gitlab service
+service "gitlab" do
+  supports :status => true
+end
+
 # render templates
+template "#{node[:gitlab][:user_home]}/.gitconfig" do
+  source "gitconfig.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 00644
+end
 
 template "#{node[:gitlab][:app_home]}/config/database.yml" do
   source "database.yml.erb"
@@ -77,13 +88,6 @@ template "#{node[:gitlab][:app_home]}/config/puma.rb" do
   notifies :reload, "service[gitlab]"
 end
 
-template "#{node[:gitlab][:user_home]}/.gitconfig" do
-  source "gitconfig.erb"
-  owner node[:gitlab][:user]
-  group node[:gitlab][:user]
-  mode 00644
-end
-
 # install bundles
 execute "gitlab-bundle-install" do
   command "bundle install --deployment --without development test postgres && touch .gitlab-bundles"
@@ -109,11 +113,6 @@ template "/etc/init.d/gitlab" do
   owner "root"
   group "root"
   mode 00755
+  notifies :enable, "service[gitlab]"
   notifies :restart, "service[gitlab]"
-end
-
-# start gitlab service
-service "gitlab" do
-  supports :status => true, :restart => true, :reload => true
-  action [ :enable, :start ]
 end
