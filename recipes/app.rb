@@ -45,7 +45,7 @@ end
 
 # define gitlab service
 service "gitlab" do
-  supports :status => true
+  supports :status => true, :restart => true
 end
 
 # render templates
