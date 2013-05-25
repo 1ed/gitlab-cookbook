@@ -1,0 +1,118 @@
+#
+# Cookbook Name:: gitlab
+# Recipe:: app
+#
+# Copyright (C) 2013 Gábor Egyed
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+#
+
+# git clone
+git node[:gitlab][:app_home] do
+  repository node[:gitlab][:git_url]
+  reference node[:gitlab][:git_ref]
+  action :checkout
+  # see https://tickets.opscode.com/browse/CHEF-3940
+  #user node[:gitlab][:user]
+  #group node[:gitlab][:user]
+end
+
+# workaround for https://tickets.opscode.com/browse/CHEF-3940
+execute "gitlab-fix-permissions" do
+  command "chown -R #{node[:gitlab][:user]}. #{node[:gitlab][:app_home]}"
+  action :run
+end
+
+# render templates
+
+template "#{node[:gitlab][:app_home]}/config/database.yml" do
+  source "database.yml.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+  notifies :reload, "service[gitlab]"
+end
+
+template "#{node[:gitlab][:app_home]}/config/gitlab.yml" do
+  source "gitlab.yml.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+end
+
+template "#{node[:gitlab][:app_home]}/config/resque.yml" do
+  source "resque.yml.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+  notifies :reload, "service[gitlab]"
+end
+
+template "#{node[:gitlab][:app_home]}/config/puma.rb" do
+  source "puma.rb.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0600
+  notifies :reload, "service[gitlab]"
+end
+
+template "#{node[:gitlab][:user_home]}/.gitconfig" do
+  source "gitconfig.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 00644
+end
+
+# create dirs
+
+directory node[:gitlab][:satellites_home] do
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 00700
+  action :create
+end
+
+%w{ tmp/sockets tmp/pids }.each do |dir|
+  directory "#{node[:gitlab][:app_home]}/#{dir}" do
+    user node[:gitlab][:user]
+    group node[:gitlab][:user]
+    mode 00755
+    recursive true
+    action :create
+  end
+end
+
+# install bundles
+execute "gitlab-bundle-install" do
+  command "bundle install --deployment --without development test postgres && touch .gitlab-bundles"
+  cwd node[:gitlab][:app_home]
+  user node[:gitlab][:user]
+  group node[:gitlab][:user]
+  environment({ 'LANG' => "en_US.UTF-8", 'LC_ALL' => "en_US.UTF-8", 'HOME' => node[:gitlab][:user_home] })
+  not_if { File.exists?("#{node[:gitlab][:app_home]}/.gitlab-bundles") }
+end
+
+# setup database
+execute "gitlab-bundle-rake" do
+  command "bundle exec rake gitlab:setup RAILS_ENV=production force=yes && touch .gitlab-setup"
+  cwd node[:gitlab][:app_home]
+  user node[:gitlab][:user]
+  group node[:gitlab][:user]
+  not_if { File.exists?("#{node[:gitlab][:app_home]}/.gitlab-setup") }
+end
+
+# render gitlab init script
+template "/etc/init.d/gitlab" do
+  source "init.erb"
+  owner "root"
+  group "root"
+  mode 00755
+  notifies :reload, "service[gitlab]"
+end
+
+# start gitlab service
+service "gitlab" do
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable, :start ]
+end
