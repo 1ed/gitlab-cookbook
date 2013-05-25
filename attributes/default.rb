@@ -31,6 +31,12 @@ default[:gitlab][:database_config] = {
   :host => 'localhost',
   :socket => "/var/run/mysqld/mysqld.sock"
 }
+default[:gitlab][:admin] = {
+  :email => "admin@local.host",
+  :name => "Administrator",
+  :username => "root",
+  :password => "5iveL!fe"
+}
 default[:gitlab][:backup_path] = "tmp/backups"
 default[:gitlab][:backup_keep_time] = 604800
 default[:gitlab][:satellites_home] = "#{node[:gitlab][:user_home]}/gitlab-satellites"
