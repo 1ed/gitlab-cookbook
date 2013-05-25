@@ -85,7 +85,7 @@ template "#{node[:gitlab][:app_home]}/config/puma.rb" do
   owner node[:gitlab][:user]
   group node[:gitlab][:user]
   mode 0600
-  notifies :reload, "service[gitlab]"
+  notifies :restart, "service[gitlab]"
 end
 
 # install bundles
