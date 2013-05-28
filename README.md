@@ -3,10 +3,11 @@
 Installs and configures the [GitLab](https://github.com/gitlabhq/gitlabhq)
 application for production environment.
 
+This version installs GitLab 5.2.
 
 # Requirements
 
-The cookbook was tested on ubuntu server 12.04 and may not works on other systems.
+The cookbook was tested on ubuntu server (12.04, 13.04) and may not work on other systems.
 
 Requires Chef 10.16.4 or later.
 
@@ -22,12 +23,12 @@ If you want to customize some parts, e.g. use percona or postgres instead of mys
 just add individual recipes to the run list and replace some of your own:
 
     { "run_list": [
-      "recipe[gitlab::base]",
-      "recipe[gitlab::redis]",
-      "recipe[your_cookbook::your_database_recipe]",
-      "recipe[gitlab::shell]",
-      "recipe[gitlab::app]",
-      "recipe[gitlab::web]"
+        "recipe[gitlab::base]",
+        "recipe[gitlab::redis]",
+        "recipe[your_cookbook::your_database_recipe]",
+        "recipe[gitlab::shell]",
+        "recipe[gitlab::app]",
+        "recipe[gitlab::web]"
     ] }
 
 
@@ -70,3 +71,4 @@ Installs nginx web server and a gitlab virtualhost to serve the app.
 # Author
 
 Author:: Gábor Egyed (<egyed.gabor@mentha.hu>)
+
