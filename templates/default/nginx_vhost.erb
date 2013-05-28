@@ -15,7 +15,7 @@ upstream gitlab {
 
 server {
   listen <%= node['gitlab']['use_https'] ? 443 : 80 %> default_server;         # e.g., listen 192.168.1.1:80;
-  server_name <%= node['fqdn'] %>;     # e.g., server_name source.example.com;
+  server_name <%= node['gitlab']['host'] %>;     # e.g., server_name source.example.com;
   root <%= node['gitlab']['app_home'] %>/public;
 
   <% if node['gitlab']['use_https'] %>
