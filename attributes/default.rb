@@ -8,6 +8,7 @@
 # file that was distributed with this source code.
 #
 
+# the hostname you want to access gitlab, e.g: git.yourcompany.com
 default[:gitlab][:host] = node[:fqdn]
 default[:gitlab][:user] = "git"
 default[:gitlab][:user_home] = "/home/#{node[:gitlab][:user]}"
@@ -53,3 +54,4 @@ default[:gitlab_shell][:git_url] = "https://github.com/gitlabhq/gitlab-shell.git
 default[:gitlab_shell][:git_ref] = "v1.4.0"
 default[:gitlab_shell][:repositories] = "#{node[:gitlab][:user_home]}/repositories"
 default[:gitlab_shell][:redis_config] = nil
+
