@@ -18,7 +18,9 @@ end
 
 # install required packages
 node[:gitlab][:packages].each do |pkg|
-  package pkg
+  package "gitlab-#{pkg}" do
+    name pkg
+  end
 end
 
 # install pygments from pip
