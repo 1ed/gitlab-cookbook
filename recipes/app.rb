@@ -37,7 +37,7 @@ directory node[:gitlab][:satellites_home] do
   action :create
 end
 
-%w{ tmp/sockets tmp/pids }.each do |dir|
+%w{ tmp/sockets tmp/pids public/uploads }.each do |dir|
   directory "#{node[:gitlab][:app_home]}/#{dir}" do
     user node[:gitlab][:user]
     group node[:gitlab][:user]
