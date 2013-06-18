@@ -32,7 +32,7 @@ server {
 
   <% if node['gitlab']['use_https'] %>
   ssl on;
-  ssl_certificate <%= node['gitlab']['ssl_certificate'] %>;
+  ssl_certificate <%= node['gitlab']['ssl_certificate_pem'] %>;
   ssl_certificate_key <%= node['gitlab']['ssl_certificate_key'] %>;
   keepalive_timeout    70;
   ssl_session_cache    shared:SSL:10m;

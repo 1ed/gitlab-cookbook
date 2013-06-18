@@ -17,7 +17,7 @@ directory "/etc/nginx/certificates" do
   group "root"
   mode 00700
   action :create
-  only_if { node[:gitlab][:use_https] }
+  only_if { node[:gitlab][:use_https] && !File.exists?(node[:gitlab][:ssl_certificate_pem]) }
 end
 
 bash "gitlab-create-SSL-certificate" do
