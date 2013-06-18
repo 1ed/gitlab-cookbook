@@ -32,10 +32,11 @@ bash "gitlab-create-SSL-certificate" do
 end
 
 # create vistualhost
-template "/etc/nginx/conf.d/gitlab.conf" do
+template "/etc/nginx/sites-available/gitlab" do
   owner "root"
   group "root"
   mode 0644
   source "nginx_vhost.erb"
-  notifies :reload, "service[nginx]"
 end
+
+nginx_site "gitlab"
