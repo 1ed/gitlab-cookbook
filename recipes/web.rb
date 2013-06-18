@@ -37,6 +37,7 @@ template "/etc/nginx/sites-available/gitlab" do
   group "root"
   mode 0644
   source "nginx_vhost.erb"
+  notifies :reload, "service[nginx]"
 end
 
 nginx_site "gitlab"
