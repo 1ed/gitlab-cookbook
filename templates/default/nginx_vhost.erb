@@ -3,7 +3,7 @@
 
 # GITLAB
 # Maintainer: @randx
-# App Version: 5.0
+# App Version: 5.2
 
 upstream gitlab {
   # fail_timeout=0 means we always retry an upstream even if it failed
@@ -15,7 +15,8 @@ upstream gitlab {
 
 <% if node['gitlab']['use_https'] %>
 server {
-    listen         [::]:80;
+    listen 80;
+    server_name <%= node['gitlab']['host'] %>;
     return 301 https://$host$request_uri;
 }
 <% end %>
@@ -27,7 +28,7 @@ server {
   listen 80
   <% end %>
 
-  server_name <%= node['gitlab']['host'] %>;     # e.g., server_name source.example.com;
+  server_name <%= node['gitlab']['host'] %>;
   root <%= node['gitlab']['app_home'] %>/public;
 
   <% if node['gitlab']['use_https'] %>
