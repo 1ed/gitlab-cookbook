@@ -19,7 +19,7 @@ end
 # install required packages
 node[:gitlab][:packages].each do |pkg|
   package "gitlab-#{pkg}" do
-    name pkg
+    package_name pkg
   end
 end
 
