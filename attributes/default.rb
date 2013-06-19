@@ -40,6 +40,7 @@ default[:gitlab][:admin] = {
   # password must be at least 6 chars long
   :password => "5iveL!fe"
 }
+default[:gitlab][:make_backups] = true
 default[:gitlab][:backup_path] = "tmp/backups"
 default[:gitlab][:backup_keep_time] = 604800
 default[:gitlab][:satellites_home] = "#{node[:gitlab][:user_home]}/gitlab-satellites"
