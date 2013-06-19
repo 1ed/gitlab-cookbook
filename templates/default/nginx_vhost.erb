@@ -24,8 +24,10 @@ server {
 server {
   <% if node['gitlab']['use_https'] %>
   listen 443 ssl;
+  listen [::]:443 ipv6only=on ssl;
   <% else %>
-  listen 80
+  listen 80;
+  listen [::]:80 ipv6only=on;
   <% end %>
 
   server_name <%= node['gitlab']['host'] %>;
