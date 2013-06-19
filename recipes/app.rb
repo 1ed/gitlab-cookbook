@@ -101,7 +101,7 @@ end
 
 # install bundles
 execute "gitlab-bundle-install" do
-  command "bundle install --deployment --without development test postgres && touch .gitlab-bundles"
+  command "bundle install --binstubs --deployment --without development test postgres && touch .gitlab-bundles"
   cwd node[:gitlab][:app_home]
   user node[:gitlab][:user]
   group node[:gitlab][:user]

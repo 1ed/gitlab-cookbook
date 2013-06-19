@@ -24,8 +24,5 @@ cron_d "gitlab-backup" do
   minute "0"
   user node[:gitlab][:user]
   home node[:gitlab][:app_home]
-  command %Q{
-    cd #{node[:gitlab][:app_home]} &&
-    bundle exec rake gitlab:backup:create RAILS_ENV=production
-  }
+  command "cd #{node[:gitlab][:app_home]} && bin/rake -s gitlab:backup:create RAILS_ENV=production > /dev/null"
 end

@@ -42,7 +42,7 @@ default[:gitlab][:admin] = {
 }
 default[:gitlab][:make_backups] = true
 default[:gitlab][:backup_path] = "tmp/backups"
-default[:gitlab][:backup_keep_time] = 604800
+default[:gitlab][:backup_keep_time] = 604800 # 1 week
 default[:gitlab][:satellites_home] = "#{node[:gitlab][:user_home]}/gitlab-satellites"
 default[:gitlab][:use_https] = false
 default[:gitlab][:ssl_certificate] = "/etc/nginx/#{node[:gitlab][:host]}.crt"
