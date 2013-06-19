@@ -21,8 +21,8 @@ end
 
 # workaround for https://tickets.opscode.com/browse/CHEF-3940
 execute "gitlab-shell-fix-permissions" do
-  command "chown -R #{node[:gitlab][:user]}. #{node[:gitlab_shell][:app_home]}"
-  action :run
+  command "chown -Rf #{node[:gitlab][:user]}. #{node[:gitlab_shell][:app_home]}"
+  only_if { Etc.getpwuid(File.stat(node[:gitlab_shell][:app_home]).uid).name != node[:gitlab][:user] }
 end
 
 # render gitlab shell config file

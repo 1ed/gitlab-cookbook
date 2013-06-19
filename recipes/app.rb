@@ -24,8 +24,8 @@ end
 
 # workaround for https://tickets.opscode.com/browse/CHEF-3940
 execute "gitlab-fix-permissions" do
-  command "chown -R #{node[:gitlab][:user]}. #{node[:gitlab][:app_home]}"
-  action :run
+  command "chown -Rf #{node[:gitlab][:user]}. #{node[:gitlab][:app_home]}"
+  only_if { Etc.getpwuid(File.stat(node[:gitlab][:app_home]).uid).name != node[:gitlab][:user] }
 end
 
 # create dirs
