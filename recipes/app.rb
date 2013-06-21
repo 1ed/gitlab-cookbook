@@ -49,6 +49,7 @@ end
 
 # define gitlab service
 service "gitlab" do
+  priority 99
   supports :status => true, :restart => true
 end
 

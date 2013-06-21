@@ -54,7 +54,7 @@ start() {
     exit 1
   else
     if [ `whoami` = root ]; then
-      execute "rm $SOCKET_PATH/gitlab.socket"
+      execute "rm -f $SOCKET_PATH/gitlab.socket > /dev/null  2>&1"
       execute "RAILS_ENV=production bundle exec puma $DAEMON_OPTS"
       execute "mkdir -p $PID_PATH && $STOP_SIDEKIQ  > /dev/null  2>&1"
       execute "mkdir -p $PID_PATH && $START_SIDEKIQ  > /dev/null  2>&1"
