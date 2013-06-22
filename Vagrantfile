@@ -9,12 +9,10 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "gitlab"
 
   # Every Vagrant virtual environment requires a box to build off of.
-  #config.vm.box = "raring-server-cloudimg-vagrant-amd64-disk1"
   config.vm.box = "precise32"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  #config.vm.box_url = "http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
   # Assign this VM to a host-only network IP, allowing you to access it
@@ -85,6 +83,7 @@ Vagrant.configure("2") do |config|
         :server_repl_password => 'replpass'
       },
       :gitlab => {
+        :host => 'gitlab.lo',
         :database_config => {
           :password => 'gitlabdbpass'
         }
