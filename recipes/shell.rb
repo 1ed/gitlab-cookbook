@@ -12,17 +12,8 @@
 git node[:gitlab_shell][:app_home] do
   repository node[:gitlab_shell][:git_url]
   reference node[:gitlab_shell][:git_ref]
-  action :checkout
-
-  # see https://tickets.opscode.com/browse/CHEF-3940
-  #user node[:gitlab_shell][:user]
-  #group node[:gitlab_shell][:user]
-end
-
-# workaround for https://tickets.opscode.com/browse/CHEF-3940
-execute "gitlab-shell-fix-permissions" do
-  command "chown -Rf #{node[:gitlab][:user]}. #{node[:gitlab_shell][:app_home]}"
-  only_if { Etc.getpwuid(File.stat(node[:gitlab_shell][:app_home]).uid).name != node[:gitlab][:user] }
+  user node[:gitlab][:user]
+  group node[:gitlab][:user]
 end
 
 # render gitlab shell config file

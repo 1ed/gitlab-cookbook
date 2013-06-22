@@ -16,20 +16,11 @@ Chef::Application.fatal!(
 git node[:gitlab][:app_home] do
   repository node[:gitlab][:git_url]
   reference node[:gitlab][:git_ref]
-  action :checkout
-  # see https://tickets.opscode.com/browse/CHEF-3940
-  #user node[:gitlab][:user]
-  #group node[:gitlab][:user]
-end
-
-# workaround for https://tickets.opscode.com/browse/CHEF-3940
-execute "gitlab-fix-permissions" do
-  command "chown -Rf #{node[:gitlab][:user]}. #{node[:gitlab][:app_home]}"
-  only_if { Etc.getpwuid(File.stat(node[:gitlab][:app_home]).uid).name != node[:gitlab][:user] }
+  user node[:gitlab][:user]
+  group node[:gitlab][:user]
 end
 
 # create dirs
-
 directory node[:gitlab][:satellites_home] do
   owner node[:gitlab][:user]
   group node[:gitlab][:user]
@@ -102,21 +93,34 @@ end
 
 # install bundles
 execute "gitlab-bundle-install" do
-  command "bundle install --binstubs --deployment --without development test postgres && touch .gitlab-bundles"
+  command "bundle install --binstubs --deployment --without development test postgres && git rev-parse HEAD > .gitlab-revision"
   cwd node[:gitlab][:app_home]
   user node[:gitlab][:user]
   group node[:gitlab][:user]
   environment({ 'LANG' => "en_US.UTF-8", 'LC_ALL' => "en_US.UTF-8", 'HOME' => node[:gitlab][:user_home] })
-  not_if { File.exists?("#{node[:gitlab][:app_home]}/.gitlab-bundles") }
+  not_if "grep -qi $(git rev-parse HEAD) .gitlab-revision", :cwd => node[:gitlab][:app_home], :user => node[:gitlab][:user]
+  notifies :run, "execute[gitlab-setup]", :immediately
+  notifies :run, "execute[gitlab-migrate]", :immediately
+  notifies :restart, "service[gitlab]"
 end
 
 # setup database
-execute "gitlab-bundle-rake" do
+execute "gitlab-setup" do
   command "bundle exec rake gitlab:setup RAILS_ENV=production force=yes && touch .gitlab-setup"
   cwd node[:gitlab][:app_home]
   user node[:gitlab][:user]
   group node[:gitlab][:user]
+  action :nothing
   not_if { File.exists?("#{node[:gitlab][:app_home]}/.gitlab-setup") }
+end
+
+execute "gitlab-migrate" do
+  command "bundle exec rake db:migrate RAILS_ENV=production"
+  cwd node[:gitlab][:app_home]
+  user node[:gitlab][:user]
+  group node[:gitlab][:user]
+  action :nothing
+  only_if { File.exists?("#{node[:gitlab][:app_home]}/.gitlab-setup") }
 end
 
 # render gitlab init script

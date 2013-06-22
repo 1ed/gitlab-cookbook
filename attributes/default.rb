@@ -20,7 +20,7 @@ default[:gitlab][:packages] = %w{
 }
 default[:gitlab][:app_home] = "#{node[:gitlab][:user_home]}/gitlab"
 default[:gitlab][:git_url] = "https://github.com/gitlabhq/gitlabhq.git"
-default[:gitlab][:git_ref] = "5-2-stable"
+default[:gitlab][:git_ref] = "5-3-stable"
 default[:gitlab][:redis_uri] = nil
 default[:gitlab][:database_config] = {
   :adapter => "mysql2",
@@ -52,7 +52,7 @@ default[:gitlab][:ssl_req] = "/C=US/ST=Several/L=Locality/O=Example/OU=Operation
 
 default[:gitlab_shell][:app_home] = "#{node[:gitlab][:user_home]}/gitlab-shell"
 default[:gitlab_shell][:git_url] = "https://github.com/gitlabhq/gitlab-shell.git"
-default[:gitlab_shell][:git_ref] = "v1.4.0"
+default[:gitlab_shell][:git_ref] = "v1.5.0"
 default[:gitlab_shell][:repositories] = "#{node[:gitlab][:user_home]}/repositories"
 default[:gitlab_shell][:redis_config] = nil
 
