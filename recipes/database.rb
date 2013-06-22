@@ -7,7 +7,8 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 #
-
+include_recipe "mysql::client"
+include_recipe "mysql::server"
 include_recipe "mysql::ruby"
 
 # include the secure password from openssl recipe
@@ -21,21 +22,19 @@ ruby_block "save node data" do
   not_if { Chef::Config[:solo] }
 end
 
-mysql_database node[:gitlab][:database_config][:database] do
-  connection(
+connection = {
     :host => "localhost",
     :username => "root",
     :password => node[:mysql][:server_root_password]
-  )
+}
+
+mysql_database node[:gitlab][:database_config][:database] do
+  connection connection
   action :create
 end
 
 mysql_database_user node[:gitlab][:database_config][:username] do
-  connection(
-    :host => "localhost",
-    :username => "root",
-    :password => node[:mysql][:server_root_password]
-  )
+  connection connection
   password node[:gitlab][:database_config][:password]
   database_name node[:gitlab][:database_config][:database]
   host "localhost"
