@@ -3,7 +3,7 @@
 Installs and configures the [GitLab](https://github.com/gitlabhq/gitlabhq)
 application for production environment.
 
-This version installs GitLab 5.2.
+This version installs GitLab 5.3.
 
 # Requirements
 
