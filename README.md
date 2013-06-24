@@ -31,6 +31,93 @@ just add individual recipes to the run list and replace some of your own:
         "recipe[gitlab::web]"
     ] }
 
+## Install GitLab to a remote server after a fresh OS installation (for Chef newbies)
+
+    # create an empty directory
+    mkdir git-server && cd git-server
+
+    bundle init
+    # edit the Gemfile
+    vim Gemfile
+
+      source "https://rubygems.org"
+
+      gem 'berkshelf'
+      gem 'knife-solo',
+        :github => 'matschaffer/knife-solo',
+        :branch => 'master',
+        :submodules => true
+
+    # install gems
+    bundle install
+
+    # create a new chef project
+    bundle exec knife solo init --berkshelf .
+
+    # edit the Berksfile
+    vim Berksfile
+
+      site :opscode
+
+      cookbook "apt", "~> 2.0.0"
+      cookbook "ntp", "~> 1.3.2"
+      cookbook "postfix", "~> 2.1.6"
+      cookbook "python", github: "opscode-cookbooks/python"
+      cookbook "gitlab", github: "1ed/gitlab-cookbook"
+
+    # install chef on the remote host (needs sudo)
+    bundle exec knife solo prepare user@hostname
+
+    # the previous command created a nodefile to the node direcotry
+    # edit the nodefile, use your own passwords, hostnames, smtp config, ...
+    # gitlab admin password must be at least 6 characters long
+    vim node/hostname.json
+
+      {
+        "mysql": {
+          "bind_address": "127.0.0.1",
+          "server_root_password": "rootpass",
+          "server_debian_password": "debpass",
+          "server_repl_password": "replpass"
+        },
+        "gitlab": {
+          "host": "git.example.com",
+          "admin": {
+            "email": "admin@git.example.com",
+            "name": "Administrator",
+            "username": "admin",
+            "password": "adminadmin"
+          },
+          "database_config": {
+            "password": "gitlabdbpass"
+          }
+        },
+        "postfix": {
+          "smtp_tls_cafile": "/etc/ssl/certs/ca-certificates.crt",
+          "myhostname": "git.example.com",
+          "relayhost": "[smtp.example.com]:587",
+          "smtpd_use_tls": "no",
+          "smtp_sasl_auth_enable": "yes",
+          "smtp_sasl_user_name": "smtp_user@example.com",
+          "smtp_sasl_passwd": "smtp_password"
+        },
+        "nginx": {
+          "default_site_enabled": false
+        },
+        "run_list": [
+          "recipe[apt]",
+          "recipe[ntp]",
+          "recipe[postfix]",
+          "recipe[postfix::sasl_auth]",
+          "recipe[python]",
+          "recipe[gitlab]"
+        ]
+      }
+
+    # cook :)
+    bundle exec knife solo cook user@hostname
+
+    # go to git.example.com and login with admin/adminadmin
 
 # Attributes
 
