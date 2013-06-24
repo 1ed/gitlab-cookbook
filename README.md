@@ -31,7 +31,43 @@ just add individual recipes to the run list and replace some of your own:
         "recipe[gitlab::web]"
     ] }
 
-## Install GitLab to a remote server after a fresh OS installation (for Chef newbies)
+# Attributes
+
+See [`attributes/default.rb`](attributes/default.rb) for more information.
+
+
+# Recipes
+
+## default
+
+Installs the full stack.
+
+## base
+
+Installs dependencies and setup a user.
+
+## database
+
+Installs mysql and setup a database.
+
+## redis
+
+Installs redis server from a ppa repository.
+
+## shell
+
+Setup gitlab-shell.
+
+## app
+
+Installs the gitlab application and setup the gitlab service.
+
+## web
+
+Installs nginx web server and a gitlab virtualhost to serve the app.
+
+
+# Install GitLab to a remote server after a fresh OS installation (for Chef newbies)
 
     # create an empty directory
     mkdir git-server && cd git-server
@@ -119,43 +155,7 @@ just add individual recipes to the run list and replace some of your own:
 
     # go to git.example.com and login with admin/adminadmin
 
-# Attributes
-
-See [`attributes/default.rb`](attributes/default.rb) for more information.
-
-
-# Recipes
-
-## default
-
-Installs the full stack.
-
-## base
-
-Installs dependencies and setup a user.
-
-## database
-
-Installs mysql and setup a database.
-
-## redis
-
-Installs redis server from a ppa repository.
-
-## shell
-
-Setup gitlab-shell.
-
-## app
-
-Installs the gitlab application and setup the gitlab service.
-
-## web
-
-Installs nginx web server and a gitlab virtualhost to serve the app.
-
 
 # Author
 
 Author:: Gábor Egyed (<egyed.gabor@mentha.hu>)
-
