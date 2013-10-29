@@ -91,6 +91,23 @@ template "#{node[:gitlab][:app_home]}/db/fixtures/production/001_admin.rb" do
   mode 0600
 end
 
+# enable rack-attack
+execute "gitlab-enable-rack-attack" do
+  command "sed -i 's/# config.middleware.use Rack::Attack/config.middleware.use Rack::Attack/' config/application.rb"
+  cwd node[:gitlab][:app_home]
+  user node[:gitlab][:user]
+  group node[:gitlab][:user]
+  action :nothing
+end
+
+template "#{node[:gitlab][:app_home]}/config/initializers/rack_attack.rb" do
+  source "rack_attack.rb.erb"
+  owner node[:gitlab][:user]
+  group node[:gitlab][:user]
+  mode 0644
+  notifies :run, "execute[gitlab-enable-rack-attack]", :immediately
+end
+
 # install bundles
 execute "gitlab-bundle-install" do
   command "bundle install --binstubs --deployment --without development test postgres && git rev-parse HEAD > .gitlab-revision"
