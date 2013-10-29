@@ -28,7 +28,9 @@ just add individual recipes to the run list and replace some of your own:
         "recipe[your_cookbook::your_database_recipe]",
         "recipe[gitlab::shell]",
         "recipe[gitlab::app]",
-        "recipe[gitlab::web]"
+        "recipe[gitlab::web]",
+        "recipe[gitlab::backup]",
+        "recipe[gitlab::logrotate]"
     ] }
 
 # Attributes
