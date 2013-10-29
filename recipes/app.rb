@@ -76,8 +76,8 @@ template "#{node[:gitlab][:app_home]}/config/resque.yml" do
   notifies :restart, "service[gitlab]"
 end
 
-template "#{node[:gitlab][:app_home]}/config/puma.rb" do
-  source "puma.rb.erb"
+template "#{node[:gitlab][:app_home]}/config/unicorn.rb" do
+  source "unicorn.rb.erb"
   owner node[:gitlab][:user]
   group node[:gitlab][:user]
   mode 0600

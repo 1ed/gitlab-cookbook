@@ -13,20 +13,36 @@ default[:gitlab][:host] = node[:fqdn]
 default[:gitlab][:user] = "git"
 default[:gitlab][:user_home] = "/home/#{node[:gitlab][:user]}"
 default[:gitlab][:packages] = %w{
-  curl checkinstall ruby1.9.3 openssh-server openssl
-  build-essential ruby1.9.1-dev zlib1g-dev libyaml-dev libssl-dev
-  libgdbm-dev libreadline-dev libncurses5-dev libffi-dev libxml2-dev
-  libxslt1-dev libcurl4-openssl-dev libicu-dev libc6-dev
+  build-essential
+  checkinstall
+  curl
+  libc6-dev
+  libcurl4-openssl-dev
+  libffi-dev
+  libgdbm-dev
+  libicu-dev
+  libncurses5-dev
+  libreadline-dev
+  libssl-dev
+  libxml2-dev
+  libxslt1-dev
+  libyaml-dev
+  openssh-server
+  openssl
+  python-docutils
+  ruby1.9.1-dev
+  ruby1.9.3
+  zlib1g-dev
 }
 default[:gitlab][:app_home] = "#{node[:gitlab][:user_home]}/gitlab"
 default[:gitlab][:git_url] = "https://github.com/gitlabhq/gitlabhq.git"
-default[:gitlab][:git_ref] = "5-3-stable"
+default[:gitlab][:git_ref] = "6-2-stable"
 default[:gitlab][:redis_uri] = nil
 default[:gitlab][:database_config] = {
   :adapter => "mysql2",
   :encoding => "utf8",
   :reconnect => false,
-  :pool => 5,
+  :pool => 10,
   :database => "gitlab",
   :username => "gitlab",
   :host => 'localhost',
@@ -52,7 +68,6 @@ default[:gitlab][:ssl_req] = "/C=US/ST=Several/L=Locality/O=Example/OU=Operation
 
 default[:gitlab_shell][:app_home] = "#{node[:gitlab][:user_home]}/gitlab-shell"
 default[:gitlab_shell][:git_url] = "https://github.com/gitlabhq/gitlab-shell.git"
-default[:gitlab_shell][:git_ref] = "v1.5.0"
+default[:gitlab_shell][:git_ref] = "v1.7.1"
 default[:gitlab_shell][:repositories] = "#{node[:gitlab][:user_home]}/repositories"
 default[:gitlab_shell][:redis_config] = nil
-
